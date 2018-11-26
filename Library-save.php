@@ -24,12 +24,12 @@ if ($ok) {
 // Set the exicution commande
 
 
-    if (empty($nationId)) {
+    if (empty($nationID)) {
         $sql = "INSERT INTO profile (name ,nation,type ) 
     VALUES (:name, :nation, :type)";
     }
     else {
-        $sql = "UPDATE profile SET name = :name,nation=:nation,type=:type WHERE nationID = :nationId";
+        $sql = "UPDATE profile SET name = :name,nation=:nation,type=:type WHERE nationID = :nationID";
     }
 
     $cmd = $db->prepare($sql);

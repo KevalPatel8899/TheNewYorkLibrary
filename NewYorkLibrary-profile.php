@@ -5,77 +5,25 @@
     <title>The NewYork Library</title>
 </head>
 <body>
-
-<?php
-$title = "The NewYork Library";
-require('header.php');
-if (isset($_SESSION['userId'])) {
-    echo '<a href="NewYorkLibrary.php">Add a New Restaurant</a> ';
-}
-?>
-<h1>Membership Information</h1>
-
-<form method="get">
-    <fieldset class="col-md-12 text-right">
-        <label for="searchName">Search: </label>
-        <input name="searchName" id="searchName" placeholder="Search By Name" />
-        <select name="searchType" id="searchType">
-            <option>-All-</option>
-            <?php
-            // connect
-            $db = new PDO('mysql:host=aws.computerstudi.es;dbname=gc900393482', 'gc900393482', 'OfSxHqw4iM');
-            $sql = "SELECT * FROM nation ORDER BY nation";
-            $cmd = $db->prepare($sql);
-            $cmd->execute();
-            $types = $cmd->fetchAll();
-            foreach ($types as $t) {
-                echo "<option>{$t['nation']}</option>";
-            }
-            ?>
-        </select>
-        <button class="btn btn-primary">Go</button>
-
-    </fieldset>
-</form>
-
+<h1>Information for the books</h1>
 
 <link rel="stylesheet" href="css/bootstrap.min.css" />
 <link rel="stylesheet" href="css/custom.css">
 <a href="NewYorkLibrary.php">Include your books</a>
 <?php
 try {
+    require('header.php');
+
+// connect to the database
+    $db = new PDO('mysql:host=aws.computerstudi.es;dbname=gc900393482', 'gc900393482', 'OfSxHqw4iM');
+
+// sett the query
     $sql = "SELECT * FROM profile";
-    // search by name if the user is searching
-    $searchName = null;
-    $searchType = null;
-    if (isset($_GET['searchName'])) {
-        $searchName = $_GET['searchName'];
-        $sql .= " WHERE name LIKE ?";
-        // now check the type
-        if ($_GET['searchType'] != "-All-") {
-            $searchType = $_GET['searchType'];
-            $sql .= " AND nation= ?";
-        }
-    }
-    // execute & store the result
+
+//exicution and run the command
+
     $cmd = $db->prepare($sql);
-    if (isset($searchName)) {
-        $words[0] = "%$searchName%";
-        if (isset($searchType)) {
-            $words[1] = $searchType;
-        }
-        $cmd->execute($words);
-        if ($searchName == "") {
-            $searchName = "All";
-        }
-        if ($searchType == "") {
-            $searchType = "All";
-        }
-        echo "<h3>You searched: $searchName / $searchType</h3>";
-    }
-    else {
-        $cmd->execute();
-    }
+    $cmd->execute();
     $NewYorkLibrary = $cmd->fetchAll();
 
 //set the table for the Profile table
@@ -90,7 +38,7 @@ try {
     foreach ($NewYorkLibrary as $l) {
         echo "<tr><td>{$l['name']}</td>           
         <td> {$l['nation']} </td>
-         <td> {$l['type']}</td>";}
+         <td> {$l['type']}</td>";
 
 
 
@@ -99,7 +47,7 @@ try {
             echo "<td><a href=\"NewYorkLibrary.php?nationID={$l['nationID']}\">Edit</a> | 
                 <a href=\"delete.php?nationID={$l['nationID']}\" 
                 class=\"text-danger confirmation\">Delete</a></td>";
-        }
+        }}
 // close the table
     echo '</table>';
 
